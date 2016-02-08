@@ -8,7 +8,8 @@ var models = require('../../models');
 var Day = models.Day;
 
 router.get('/api/days', function(req,res,next) {
-	Day.find().exec()
+	Day.find().populate('hotel restaurants activities')
+	.exec()
 	.then(function(data) {
 		res.json(data)
 	})
@@ -43,7 +44,9 @@ router.get('/api/days/:id', function(req,res,next) {
 })
 
 router.post('/api/days/:id/hotel', function(req,res,next) {
-	console.log(req.params.id)
+	Day.update({number: req.params.id}, {hotel: req.body.ID})
+	.then(null, next)
+	
 })
 
 router.post('/api/days/:id/restaurants', function(req,res,next) {
