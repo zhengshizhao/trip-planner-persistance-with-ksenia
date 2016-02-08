@@ -1,8 +1,21 @@
 'use strict';
 /* global $ utilsModule */
 
+
 var daysModule = (function(){
 
+// // $(document).ready(function() {
+// //   $.get('api/days', function(data) {
+// //     var result = [];
+// //     for(var i = 0; i < data.length; i++) {
+// //       result.push(new Day(data[i]));
+      
+// //     }
+// //     console.log("result is: ", result);
+// //     return result;
+// //  //   console.log("data when page relodes: ", daysAll);
+// //   })
+// })
   var days = [],
       currentDay;
 
@@ -18,10 +31,10 @@ var daysModule = (function(){
 
   // Day class and setup
 
-  function Day () {
-    this.hotel = null;
-    this.restaurants = [];
-    this.activities = [];
+  function Day (data) {
+    this.hotel = data.hotel;
+    this.restaurants = data.restaurants;
+    this.activities = data.activities;
     this.number = days.push(this);
     this.buildButton().drawButton();
   }
@@ -30,9 +43,21 @@ var daysModule = (function(){
     this.$button = $('<button class="btn btn-circle day-btn"></button>')
       .text(this.number);
     var self = this;
+    console.log("This is first this: ", this)
     this.$button.on('click', function(){
+      console.log("This is second this: ", this)
       this.blur(); // removes focus box from buttons
+     // self.switchTo();
+
+    $.get('/api/days/' + self.number, function (data) {
+  
       self.switchTo();
+      console.log("data we need now ", data);
+    })
+    .fail( function (err) {console.error('err', err)});  
+
+
+
     });
     return this;
   };
@@ -86,10 +111,17 @@ var daysModule = (function(){
 
   function addDay () {
     if (this && this.blur) this.blur(); // removes focus box from buttons
-    var newDay = new Day();
-    if (days.length === 1) currentDay = newDay;
-    newDay.switchTo();
-  }
+    
+
+    $.post('/api/days', {number: days.length+1}, function (data) {
+      var newDay = new Day(data); 
+      if (days.length === 1) currentDay = newDay;
+      newDay.switchTo();     
+      console.log('data is ', data);
+      console.log('newDay is ', newDay);
+    })
+    .fail( function (err) {console.error('err', err)}); 
+  } 
 
   function deleteCurrentDay () {
     if (days.length < 2 || !currentDay) return;
