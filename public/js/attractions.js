@@ -14,7 +14,7 @@ var attractionsModule = (function(){
   });
 
   // Attraction class setup
-
+  // Merges keys of data and this
   function Attraction (data) {
     utilsModule.merge(data, this); // copy all key-val pairs into this new obj
     this.buildItineraryItem().buildMarker();
@@ -23,10 +23,16 @@ var attractionsModule = (function(){
   Attraction.prototype.buildItineraryItem = function () {
     var $button = $('<button class="btn btn-xs btn-danger remove btn-circle">x</button>');
     var $title = $('<span class="title"></span>').text(this.name);
+
+    // Creates new div for Hotel, Restaurant or Activity list in itinerary block
     this.$itineraryItem = $('<div class="itinerary-item"></div>')
+    // Appends span element and remove button
       .append($title)
       .append($button);
+    // Captures this
     var self = this;
+
+    //When appended button is clickedm removes captured this.
     $button.on('click', function () {
       self.removeFromDay(); // hide from UI and remove from day model
     });

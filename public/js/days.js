@@ -9,11 +9,10 @@ $(document).ready(function() {
     var result = [];
     for(var i = 0; i < data.length; i++) {
       result.push(new Day(data[i]));
-      
     }
-    console.log("result is: ", result);
-    return result;
- //   console.log("data when page relodes: ", daysAll);
+    days = result;
+    currentDay = result[0];
+    console.log(currentDay)
   })
 })
   var days = [],
@@ -32,7 +31,8 @@ $(document).ready(function() {
   // Day class and setup
 
   function Day (data) {
-    this.hotel = data.hotel;
+    //this.id = data._id;
+    this.hotel = attractionsModule.create(data);
     this.restaurants = data.restaurants;
     this.activities = data.activities;
     this.number = days.push(this);
@@ -43,21 +43,11 @@ $(document).ready(function() {
     this.$button = $('<button class="btn btn-circle day-btn"></button>')
       .text(this.number);
     var self = this;
-    console.log("This is first this: ", this)
     this.$button.on('click', function(){
-      console.log("This is second this: ", this)
       this.blur(); // removes focus box from buttons
-     // self.switchTo();
-
-    $.get('/api/days/' + self.number, function (data) {
-  
       self.switchTo();
-      console.log("data we need now ", data);
-    })
-    .fail( function (err) {console.error('err', err)});  
 
-
-
+    
     });
     return this;
   };
@@ -73,7 +63,6 @@ $(document).ready(function() {
   };
 
   // day switching
-
   Day.prototype.switchTo = function () {
     currentDay.hide();
     currentDay = this;
@@ -116,8 +105,8 @@ $(document).ready(function() {
       var newDay = new Day(data);
       if (days.length === 1) currentDay = newDay;
       newDay.switchTo();
-      console.log('data is ', data);
-      console.log('newDay is ', newDay);
+      // console.log('data is ', data);
+      // console.log('newDay is ', newDay);
     })
     .fail( function (err) {console.error('err', err)}); 
   } 
@@ -140,21 +129,38 @@ $(document).ready(function() {
   var methods = {
 
     load: function(){
-      $(addDay);
+
+      //$(addDay);
     },
 
     addAttraction: function(attraction){
       // adding to the day object
+      console.log("attraction is ", attraction);
+      // switch (attraction.type) {
+      //   case 'hotel':
+      //     if (currentDay.hotel) currentDay.hotel.delete();
+      //     currentDay.hotel = attraction; break;
+      //   case 'restaurant':
+      //     utilsModule.pushUnique(currentDay.restaurants, attraction); break;
+      //   case 'activity':
+      //     utilsModule.pushUnique(currentDay.activities, attraction); break;
+      //   default: console.error('bad type:', attraction);
+      // }
+      console.log(currentDay)
+
       switch (attraction.type) {
         case 'hotel':
-          if (currentDay.hotel) currentDay.hotel.delete();
-          currentDay.hotel = attraction; break;
+          if (currentDay.hotel) currentDay.hotel.delete(); break;
         case 'restaurant':
           utilsModule.pushUnique(currentDay.restaurants, attraction); break;
         case 'activity':
           utilsModule.pushUnique(currentDay.activities, attraction); break;
         default: console.error('bad type:', attraction);
       }
+      
+      $.post('/api/days/' + currentDay.number + '/' + attraction.type, {'ID': attraction._id} );
+
+      
       // activating UI
       attraction.draw();
     },
