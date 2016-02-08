@@ -4,9 +4,9 @@ var Restaurant = require('./restaurant');
 var Activity = require('./activity');
 
 var DaySchema = new mongoose.Schema({
-  naumber: {type: Number}
-  hotel: {type: mongoose.Schema.Types.ObjectId, ref: 'Hotel'}
-  restaurants: [{type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant'}]
+  number: {type: Number},
+  hotel: {type: mongoose.Schema.Types.ObjectId, ref: 'Hotel'},
+  restaurants: [{type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant'}],
   activities: [{type: mongoose.Schema.Types.ObjectId, ref: 'Activity'}]
 });
 

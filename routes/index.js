@@ -21,4 +21,6 @@ router.get('/', function(req, res) {
   });
 })
 
+router.use(require('./api/days.js'));
+
 module.exports = router;
