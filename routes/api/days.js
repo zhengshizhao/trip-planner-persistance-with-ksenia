@@ -15,9 +15,11 @@ router.get('/api/days', function(req,res,next) {
 })
 
 router.post('/api/days', function(req,res,next) {
-	Day.create({number: 1})
+	Day.create(req.body)
 	.then(function(data) {
 		res.json(data)
+		console.log("data is ", data)
+		console.log("req.body is: ", req.body)
 	})
 	.then(null, next)
 })
@@ -31,7 +33,13 @@ router.delete('/api/days', function(req,res,next) {
 })
 
 router.get('/api/days/:id', function(req,res,next) {
-	console.log(req.params.id)
+	Day.findOne({number: req.params.id}).exec()
+	.then(function(data) {
+		console.log(data);
+		res.json(data)
+
+	})
+	.then(null, next)
 })
 
 router.post('/api/days/:id/hotel', function(req,res,next) {
