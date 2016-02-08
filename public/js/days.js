@@ -149,9 +149,15 @@ var daysModule = (function(){
       switch (attraction.type) {
         case 'hotel':
           if (currentDay.hotel) currentDay.hotel.delete();
-          currentDay.hotel = attraction; break;
+          else {currentDay.hotel = attraction; 
+          $.post('/api/days/' + currentDay._id + '/hotel', {hotel:attraction.name});}
+          break;
         case 'restaurant':
-          utilsModule.pushUnique(currentDay.restaurants, attraction); break;
+          utilsModule.pushUnique(currentDay.restaurants, attraction);
+          
+            currentDay.hotel = attraction; 
+          $.post('/api/days/' + currentDay._id + '/restaurant', {restaurant :attraction.name});
+          break;
         case 'activity':
           utilsModule.pushUnique(currentDay.activities, attraction); break;
         default: console.error('bad type:', attraction);
